@@ -31,7 +31,7 @@ export default function LoginPage() {
       title: 'Teacher',
       description: 'Manage courses, students, and earnings',
       icon: BookOpen,
-      color: 'bg-blue-500',
+      color: 'bg-brand-primary',
       features: ['Create & sell courses', 'Manage batches', 'Track earnings', 'Job applications']
     },
     {
@@ -39,7 +39,7 @@ export default function LoginPage() {
       title: 'Student',
       description: 'Learn from the best teachers',
       icon: GraduationCap,
-      color: 'bg-green-500',
+      color: 'bg-brand-secondary',
       features: ['Join live classes', 'Access recordings', 'Track progress', 'Connect with teachers']
     },
     {
@@ -47,7 +47,7 @@ export default function LoginPage() {
       title: 'Parent',
       description: 'Monitor your child&apos;s learning journey',
       icon: Users,
-      color: 'bg-purple-500',
+      color: 'bg-brand-accent',
       features: ['Monitor progress', 'Connect with teachers', 'Manage payments', 'View reports']
     }
   ];
@@ -65,16 +65,20 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        alert('Login failed. Please check your credentials.');
-      } else {
+        console.error('Login error:', result.error);
+        alert(`Login failed: ${result.error}. Please check your credentials.`);
+      } else if (result?.ok) {
         // Redirect based on role
         const redirectPath = selectedRole === 'teacher' ? '/dashboard' 
-                           : selectedRole === 'student' ? '/students'
-                           : '/parents';
+                           : selectedRole === 'student' ? '/students/dashboard'
+                           : '/parents/dashboard';
         window.location.href = redirectPath;
+      } else {
+        alert('Login failed for unknown reason. Please try again.');
       }
-    } catch {
-      alert('An error occurred during login.');
+    } catch (error) {
+      console.error('Login catch error:', error);
+      alert('An error occurred during login. Please check your internet connection and try again.');
     } finally {
       setIsLoading(false);
     }
@@ -88,17 +92,17 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-blue-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-brand-background flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl w-full space-y-8">
         {/* Header */}
         <div className="text-center">
           <Link href="/" className="inline-flex items-center space-x-2 mb-6">
-            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-brand-primary rounded-lg flex items-center justify-center">
               <span className="text-white font-bold">VL</span>
             </div>
-            <span className="text-2xl font-bold text-gray-900">VidyaLoop</span>
+            <span className="text-2xl font-bold text-brand-text">VidyaLoop</span>
           </Link>
-          <h2 className="text-3xl font-bold text-gray-900">Welcome Back!</h2>
+          <h2 className="text-3xl font-bold text-brand-text">Welcome Back!</h2>
           <p className="mt-2 text-gray-600">Sign in to continue your learning journey</p>
         </div>
 
@@ -118,7 +122,7 @@ export default function LoginPage() {
                       onClick={() => setSelectedRole(role.id)}
                       className={`relative p-4 rounded-lg border-2 cursor-pointer transition-all ${
                         isSelected 
-                          ? 'border-orange-500 bg-orange-50' 
+                          ? 'border-brand-accent bg-orange-50' 
                           : 'border-gray-200 bg-white hover:border-gray-300'
                       }`}
                     >
@@ -139,7 +143,7 @@ export default function LoginPage() {
                           </ul>
                         </div>
                         {isSelected && (
-                          <div className="text-orange-500">
+                          <div className="text-brand-accent">
                             <ArrowRight className="h-5 w-5" />
                           </div>
                         )}
@@ -153,20 +157,20 @@ export default function LoginPage() {
             {/* Trust Indicators */}
             <div className="bg-white p-4 rounded-lg border">
               <div className="flex items-center mb-3">
-                <Shield className="h-5 w-5 text-green-500 mr-2" />
+                <Shield className="h-5 w-5 text-brand-primary mr-2" />
                 <span className="font-medium text-gray-900">Secure & Trusted</span>
               </div>
               <ul className="space-y-2 text-sm text-gray-600">
                 <li className="flex items-center">
-                  <div className="w-1 h-1 bg-green-500 rounded-full mr-2"></div>
+                  <div className="w-1 h-1 bg-brand-primary rounded-full mr-2"></div>
                   SSL encrypted data protection
                 </li>
                 <li className="flex items-center">
-                  <div className="w-1 h-1 bg-green-500 rounded-full mr-2"></div>
+                  <div className="w-1 h-1 bg-brand-primary rounded-full mr-2"></div>
                   Verified teacher profiles
                 </li>
                 <li className="flex items-center">
-                  <div className="w-1 h-1 bg-green-500 rounded-full mr-2"></div>
+                  <div className="w-1 h-1 bg-brand-primary rounded-full mr-2"></div>
                   Secure payment processing
                 </li>
               </ul>
@@ -201,7 +205,7 @@ export default function LoginPage() {
                     required
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="appearance-none relative block w-full pl-10 pr-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    className="appearance-none relative block w-full pl-10 pr-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
                     placeholder="Enter your email address"
                   />
                 </div>
@@ -223,7 +227,7 @@ export default function LoginPage() {
                     required
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="appearance-none relative block w-full pl-10 pr-10 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    className="appearance-none relative block w-full pl-10 pr-10 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-accent focus:border-brand-accent"
                     placeholder="Enter your password"
                   />
                   <button
@@ -247,13 +251,13 @@ export default function LoginPage() {
                     id="remember-me"
                     name="remember-me"
                     type="checkbox"
-                    className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-brand-accent focus:ring-brand-accent border-gray-300 rounded"
                   />
                   <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
                     Remember me
                   </label>
                 </div>
-                <Link href="/auth/forgot-password" className="text-sm text-orange-600 hover:text-orange-500">
+                <Link href="/auth/forgot-password" className="text-sm text-brand-accent hover:text-yellow-500">
                   Forgot password?
                 </Link>
               </div>
@@ -262,7 +266,7 @@ export default function LoginPage() {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 text-base font-medium"
+                className="w-full bg-brand-accent hover:bg-yellow-500 text-white py-3 text-base font-medium"
               >
                 {isLoading ? 'Signing in...' : 'Sign In'}
               </Button>
@@ -282,7 +286,7 @@ export default function LoginPage() {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => signIn('google', { callbackUrl: selectedRole === 'teacher' ? '/dashboard' : selectedRole === 'student' ? '/students' : '/parents' })}
+                  onClick={() => signIn('google', { callbackUrl: selectedRole === 'teacher' ? '/dashboard' : selectedRole === 'student' ? '/students/dashboard' : '/parents/dashboard' })}
                   className="w-full"
                 >
                   <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
@@ -308,7 +312,7 @@ export default function LoginPage() {
                 Don&apos;t have an account?{' '}
                 <Link 
                   href={`/auth/signup?role=${selectedRole}`} 
-                  className="font-medium text-orange-600 hover:text-orange-500"
+                  className="font-medium text-brand-accent hover:text-yellow-500"
                 >
                   Sign up as {roles.find(r => r.id === selectedRole)?.title}
                 </Link>

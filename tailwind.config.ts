@@ -9,6 +9,15 @@ export default {
   theme: {
     extend: {
       colors: {
+        // VidyaLoop Brand Colors
+        brand: {
+          primary: '#2563EB',      // Deep Blue
+          secondary: '#10B981',    // Emerald Green
+          accent: '#F59E0B',       // Warm Orange
+          background: '#FFFFFF',   // Pure White
+          text: '#64748B',         // Slate Gray
+        },
+        // Shadcn UI compatible colors
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {

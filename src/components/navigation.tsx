@@ -1,7 +1,9 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -21,13 +23,71 @@ import {
   MessageCircle,
   Wallet,
   Star,
-  Menu
+  Menu,
+  GraduationCap,
+  BookMarked
 } from 'lucide-react';
 import { useState } from 'react';
 
 export function Navigation() {
   const { data: session, status } = useSession();
+  const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Don't show main navigation on dashboard/student/teacher/parent pages - they have their own navigation
+  if (pathname?.startsWith('/dashboard') || pathname?.startsWith('/students') || pathname?.startsWith('/teachers') || pathname?.startsWith('/parents')) {
+    return null;
+  }
+
+  const getDashboardLink = () => {
+    if (!session?.user?.role) return '/';
+    
+    switch (session.user.role) {
+      case 'teacher':
+        return '/teachers/dashboard';
+      case 'student':
+        return '/students/dashboard';
+      case 'parent':
+        return '/parents/dashboard';
+        return '/parents';
+      case 'admin':
+        return '/admin';
+      default:
+        return '/';
+    }
+  };
+
+  const getRoleIcon = () => {
+    if (!session?.user?.role) return User;
+    
+    switch (session.user.role) {
+      case 'teacher':
+        return GraduationCap;
+      case 'student':
+        return BookMarked;
+      case 'parent':
+        return Users;
+      default:
+        return User;
+    }
+  };
+
+  const getRoleColor = () => {
+    if (!session?.user?.role) return 'bg-gray-100 text-gray-800';
+    
+    switch (session.user.role) {
+      case 'teacher':
+        return 'bg-blue-100 text-blue-800';
+      case 'student':
+        return 'bg-green-100 text-green-800';
+      case 'parent':
+        return 'bg-purple-100 text-purple-800';
+      case 'admin':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
 
   return (
     <nav className="bg-white shadow-sm border-b">
@@ -45,19 +105,6 @@ export function Navigation() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/find-tutors" className="text-gray-700 hover:text-blue-600 transition-colors">
-              Find Tutors
-            </Link>
-            <Link href="/courses" className="text-gray-700 hover:text-blue-600 transition-colors">
-              Courses
-            </Link>
-            <Link href="/classes" className="text-gray-700 hover:text-blue-600 transition-colors">
-              Classes
-            </Link>
-            <Link href="/jobs" className="text-gray-700 hover:text-blue-600 transition-colors">
-              Jobs
-            </Link>
-            
             {status === 'authenticated' && session ? (
               <div className="flex items-center space-x-4">
                 {session.user.role === 'teacher' && (
@@ -200,25 +247,6 @@ export function Navigation() {
       {isMobileMenuOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
-            <Link
-              href="/browse"
-              className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600"
-            >
-              Browse Teachers
-            </Link>
-            <Link
-              href="/courses"
-              className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600"
-            >
-              Courses
-            </Link>
-            <Link
-              href="/jobs"
-              className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600"
-            >
-              Jobs
-            </Link>
-            
             {status === 'authenticated' && session ? (
               <div className="border-t pt-4">
                 <div className="flex items-center px-3 py-2">

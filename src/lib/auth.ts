@@ -83,6 +83,28 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
   },
   callbacks: {
+    async redirect({ url, baseUrl }) {
+      // Default redirect paths based on role
+      const redirectPaths = {
+        teacher: '/teachers/dashboard',
+        student: '/students/dashboard', 
+        parent: '/parents/dashboard',
+        admin: '/admin'
+      };
+      
+      // If redirecting to base URL or auth pages, redirect to teacher dashboard by default
+      if (url === baseUrl || url.includes('/auth/')) {
+        return redirectPaths.teacher;
+      }
+      
+      // Allow same-origin redirects
+      if (url.startsWith(baseUrl)) {
+        return url;
+      }
+      
+      // Default fallback to teacher dashboard
+      return baseUrl + redirectPaths.teacher;
+    },
     async jwt({ token, user, account }: { token: JWT; user?: ExtendedUser; account?: Account | null }) {
       if (user) {
         token.role = user.role;
